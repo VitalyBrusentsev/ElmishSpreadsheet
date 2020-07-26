@@ -12,5 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fable.Elmish.React" Version="3.0.1" />
+    <PackageReference Include="FsToolkit.ErrorHandling" Version="1.4.3" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,7 @@
 module Evaluator
 
+open FsToolkit.ErrorHandling
+
 type ColumnName = private { Col: char }
 
 module ColumnName =
@@ -64,15 +66,18 @@ let rec evaluate visited (cells:Map<Position, string>) expr =
 
   | Binary(l, op, r) ->
       let ops = dict [ '+', (+); '-', (-); '*', (*); '/', (/) ]
-      evaluate visited cells l |> Option.bind (fun l ->
-        evaluate visited cells r |> Option.map (fun r ->
-          ops.[op] l r ))
+      option {
+        let! left = evaluate visited cells l
+        let! right = evaluate visited cells r
+        return ops.[op] left right
+      }
 
   | Reference pos when Set.contains pos visited ->
       None
 
-  | Reference pos ->
-      cells.TryFind pos |> Option.bind (fun value ->
-        parse value |> Option.bind (fun parsed ->
-          evaluate (Set.add pos visited) cells parsed))
-
+  | Reference pos -> option {
+      let! cell = cells.TryFind pos
+      let! value = parse cell
+      let newVisited = visited |> Set.add pos
+      return! evaluate newVisited cells value
+  }
