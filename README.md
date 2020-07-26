@@ -1,4 +1,5 @@
 # Elmish Spreadsheet
+![CI](https://github.com/VitalyBrusentsev/ElmishSpreadsheet/workflows/CI/badge.svg)
 An Elmish implementation of a Spreadsheet in a Web page, based on an example in Fable REPL.
 
 Uses Fable compiler to convert F# source code to JavaScript and run in the browser.
