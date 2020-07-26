@@ -14,6 +14,12 @@ module.exports = (env, argv) => {
                 test: /\.fs(x|proj)?$/,
                 use: "fable-loader"
             }]
+        },
+        resolve: {
+            alias: {
+                "react": "preact/compat",
+                "react-dom": "preact/compat"
+            }
         }
     }
 }
