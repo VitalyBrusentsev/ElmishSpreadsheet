@@ -14,6 +14,7 @@ Uses Fable compiler to convert F# source code to JavaScript and run in the brows
 To compile the project, run the following commands
 
 ```
+dotnet restore ./src/App.fsproj
 npm install
 npm run build
 ```
