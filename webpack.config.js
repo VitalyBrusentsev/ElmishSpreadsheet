@@ -18,8 +18,7 @@ module.exports = (env, argv) => {
     return {
         devtool: "source-map",
         mode: mode,
-        //entry: "./src/App.fsproj",
-        entry: "./src/SpreadsheetComponent.js",
+        entry: "./src/App.fsproj",
         devServer: {
             contentBase: path.join(__dirname, "./dist")
         },
@@ -28,11 +27,6 @@ module.exports = (env, argv) => {
                 test: /\.fs(x|proj)?$/,
                 loader: "fable-loader",
                 options: { babel: babelOptions }
-            },
-            {
-                test: /\.js$/,
-                loader: 'babel-loader',
-                options: babelOptions
             }]
         },
         // optimization: {

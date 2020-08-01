@@ -46,4 +46,6 @@ let private program = Program.mkProgram initial update view
 let externalisedProgram =
   Externalised.externalise program
 
-let SpreadSheetReactComponent = elmishToReact externalisedProgram
+let private spreadSheetReactComponent = elmishToReact externalisedProgram
+
+ReactToWebComponents.register "spreadsheet-component" spreadSheetReactComponent
