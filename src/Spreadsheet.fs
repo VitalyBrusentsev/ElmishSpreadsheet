@@ -1,4 +1,4 @@
-module SpreadSheet
+module Spreadsheet
 
 open Elmish
 open Elmish.React
@@ -40,6 +40,10 @@ let initial () =
     Range = Some { TopLeft = (ColumnName.ofChar 'B', 2); BottomRight = (ColumnName.ofChar 'D', 5) }
     Cells = Map.empty }, Cmd.none
 
-Program.mkProgram initial update view
-|> Program.withReactBatched "main"
-|> Program.run
+open Fable.Elmish.ElmishToReact
+
+let private program = Program.mkProgram initial update view
+let externalisedProgram =
+  Externalised.externalise program
+
+let SpreadSheetReactComponent = elmishToReact externalisedProgram

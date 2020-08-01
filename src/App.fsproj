@@ -8,9 +8,11 @@
     <Compile Include="Evaluator.fs" />
     <Compile Include="Models.fs" />
     <Compile Include="Views.fs" />
-    <Compile Include="App.fs" />
+    <Compile Include="ElmishToReact.fs" />
+    <Compile Include="Spreadsheet.fs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Fable.React" Version="6.2.0" />
     <PackageReference Include="Fable.Elmish.React" Version="3.0.1" />
     <PackageReference Include="FsToolkit.ErrorHandling" Version="1.4.3" />
   </ItemGroup>

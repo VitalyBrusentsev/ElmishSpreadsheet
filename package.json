@@ -8,11 +8,17 @@
   },
   "dependencies": {
     "preact": "^10.4.6",
+    "rxjs": "^6.6.2",
     "react": "^16.8.0",
-    "react-dom": "^16.8.0"
+    "react-dom": "^16.8.0",
+    "react-to-webcomponent": "^1.4.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.7",
+    "@babel/core": "^7.10.5",
+    "@babel/plugin-transform-runtime": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/runtime": "^7.5.5",
+    "babel-loader": "^8.1.0",
     "fable-compiler": "^2.4.21",
     "fable-loader": "^2.1.9",
     "webpack": "^4.38.0",
