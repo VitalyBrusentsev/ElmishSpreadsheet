@@ -1,4 +1,4 @@
-module ColumnName
+module Cell
 
 type Column = private { Col: char }
 
@@ -23,3 +23,5 @@ module Column =
       None 
     else 
       (int c.Col) + 1 |> char |> ofChar |> Some
+
+type Row = int

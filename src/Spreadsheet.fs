@@ -3,7 +3,7 @@ module Spreadsheet
 open Elmish
 open Elmish.React
 
-open ColumnName
+open Cell
 open Models
 
 // ----------------------------------------------------------------------------

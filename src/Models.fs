@@ -1,6 +1,6 @@
 module Models
 
-open ColumnName
+open Cell
 open Evaluator
 
 type Range = { TopLeft: Position; BottomRight: Position }

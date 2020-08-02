@@ -2,11 +2,9 @@ module Evaluator
 
 open FsToolkit.ErrorHandling
 
-open ColumnName
+open Cell
 
 open Parsec
-
-type Position = Column * int
 
 type Expr =
   | Reference of Position

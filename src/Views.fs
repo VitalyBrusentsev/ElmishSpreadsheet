@@ -4,7 +4,7 @@ open Fable.React
 open Fable.React.Props
 open Fable.Core.JsInterop
 
-open ColumnName
+open Cell
 open Evaluator
 open Models
 
