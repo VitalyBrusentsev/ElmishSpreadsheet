@@ -12,19 +12,14 @@ type Event =
 
 type EditorState = 
   | Nothing
-  | Editor of Position
+  | Active of Position
   | Selection of Range
 
-type SpreadsheetState =
+type SpreadsheetModel =
   { Rows : int[]
-    Active : Position option
-    Range: Range option
+    Editor: EditorState
     Cols : Column[]
-    Cells : Map<Position, string>
-#if DEBUG
-    DebugMessage: string
-#endif
-  }
+    Cells : Map<Position, string> }
 
 type Movement =
     | MoveTo of Position

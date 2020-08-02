@@ -11,21 +11,23 @@ open Models
 // ----------------------------------------------------------------------------
 
 let update msg state =
-  match msg with
-  | StartEdit(pos) ->
-      { state with Active = Some pos; Range = None }, Cmd.none
+  match state.Editor, msg with
+  | _, StartEdit(pos) ->
+    { state with Editor = Active pos }, Cmd.none
 
-  | CancelEdit ->
-      { state with Active = None }, Cmd.none
+  | Active, CancelEdit ->
+    { state with Editor = Nothing }, Cmd.none
 
-  | UpdateValue(pos, value) ->
-      let newCells =
-          if value = ""
-              then Map.remove pos state.Cells
-              else Map.add pos value state.Cells
-      { state with Cells = newCells }, Cmd.none
-  | Select range -> 
-      { state with Range = Some range }, Cmd.ofMsg CancelEdit
+  | Active, UpdateValue(pos, value) ->
+  let newCells =
+      if value = ""
+          then Map.remove pos state.Cells
+          else Map.add pos value state.Cells
+  { state with Cells = newCells }, Cmd.none
+  | _, Select range -> 
+    { state with Editor = Selection range }, Cmd.ofMsg CancelEdit
+  | _ ->
+    state, Cmd.none
 
 open Views
 
@@ -36,11 +38,7 @@ open Views
 let initial () =
   { Cols = [|'A' .. 'K'|] |> Array.map Column.ofChar
     Rows = [|1 .. 15|]
-    Active = None
-    Range = Some { TopLeft = (Column.ofChar 'B', 2); BottomRight = (Column.ofChar 'D', 5) }
-#if DEBUG
-    DebugMessage = ""
-#endif    
+    Editor = Selection { TopLeft = (Column.ofChar 'B', 2); BottomRight = (Column.ofChar 'D', 5) }
     Cells = Map.empty }, Cmd.none
 
 open Fable.Elmish.ElmishToReact

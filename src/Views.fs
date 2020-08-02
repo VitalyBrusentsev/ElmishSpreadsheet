@@ -10,40 +10,40 @@ open Models
 open Keyboard
 
 let getPosition ((col, row): Position) (direction: Direction) cols rows =
-    match direction with
-    | Up -> if row = 1 then None else Some (col, row - 1)
-    | Down -> if row = rows then None else Some (col, row + 1)
-    | Left -> Column.tryPrev col |> Option.map (fun col1 -> (col1, row))
-    | Right -> Column.tryNext col |> Option.map (fun col1 -> col1, row)
+  match direction with
+  | Up -> if row = 1 then None else Some (col, row - 1)
+  | Down -> if row = rows then None else Some (col, row + 1)
+  | Left -> Column.tryPrev col |> Option.map (fun col1 -> (col1, row))
+  | Right -> Column.tryNext col |> Option.map (fun col1 -> col1, row)
 
-let getMovement (state: SpreadsheetState) (direction: Direction) : Movement =
-    match state.Active with
-    | None -> Invalid
-    | Some position ->
-        match (getPosition position direction (state.Cols |> Array.length) (state.Rows |> Array.length)) with
-        | Some (col, row) when Array.contains col state.Cols && Array.contains row state.Rows ->
-            MoveTo (col, row)
-        | _ -> Invalid
+let getMovement (model: SpreadsheetModel) (direction: Direction) : Movement =
+  match model.Editor with
+  | Active position ->
+    match (getPosition position direction (model.Cols |> Array.length) (model.Rows |> Array.length)) with
+    | Some (col, row) when Array.contains col model.Cols && Array.contains row model.Rows ->
+        MoveTo (col, row)
+    | _ -> Invalid
+  | Nothing | Selection _ -> Invalid
 
-let getKeyPressEvent (state: SpreadsheetState) trigger = fun ke ->
-    match ke with
-    | Enter -> 
-        match getMovement state Direction.Down with
-        | Invalid -> trigger <| CancelEdit
-        | MoveTo pos -> trigger <| StartEdit pos
+let getKeyPressEvent (model: SpreadsheetModel) trigger ke =
+  match ke with
+  | Enter ->
+    match getMovement model Down with
+    | Invalid -> trigger <| CancelEdit
+    | MoveTo pos -> trigger <| StartEdit pos
 
-    | Escape -> trigger <| CancelEdit
+  | Escape -> trigger <| CancelEdit
 
-    | Tab -> 
-        match getMovement state Direction.Right with
-        | Invalid -> trigger <| CancelEdit
-        | MoveTo pos -> trigger <| StartEdit pos
+  | Tab -> 
+    match getMovement model Right with
+    | Invalid -> trigger <| CancelEdit
+    | MoveTo pos -> trigger <| StartEdit pos
 
-    | Arrow direction ->
-        match getMovement state direction with
-            | Invalid -> ()
-            | MoveTo position -> trigger(StartEdit(position))
-    | _ -> ()
+  | Arrow direction ->
+    match getMovement model direction with
+        | Invalid -> ()
+        | MoveTo position -> trigger(StartEdit(position))
+  | _ -> ()
 
 let renderEditor (trigger:Event -> unit) pos state value =
   td [ Class "selected"] [
@@ -68,11 +68,11 @@ let inRange range (x,y) =
   let x2, y2 = range.BottomRight
   x <=x2 && x >= x1 && y <= y2 && y >= y1
 
-let mapPosToStyles rangeOpt pos (value: string option) = 
+let mapPosToStyles editor pos (value: string option) = 
   let activeBorderColor = "#1a73e8"
   let activeBackgroundColor = "rgba(23, 102, 202, 0.2)"
-  match rangeOpt with
-  | Some range when inRange range pos -> [
+  match editor with
+  | Selection range when inRange range pos -> [
     if value.IsSome then yield BackgroundColor activeBackgroundColor
     if range.TopLeft |> fst = fst pos then yield BorderLeftColor activeBorderColor
     if range.TopLeft |> snd = snd pos then yield BorderTopColor activeBorderColor
@@ -82,7 +82,10 @@ let mapPosToStyles rangeOpt pos (value: string option) =
 
 let onMouseMove trigger pos state (e: Browser.Types.MouseEvent) = 
   if e.buttons = 1.0 then 
-    let start = match state.Range with None -> pos | Some range -> range.TopLeft
+    let start = 
+      match state.Editor with 
+      | Nothing | Active _ -> pos
+      | Selection range -> range.TopLeft
     e.preventDefault()
     trigger (Select { TopLeft = start; BottomRight = pos })
 
@@ -90,17 +93,18 @@ let renderView trigger pos state (value:option<_>) =
   td
     [ Style [
         if value.IsNone then yield Background "#ffb0b0"
-        yield! mapPosToStyles state.Range pos value ]
+        yield! mapPosToStyles state.Editor pos value ]
       OnClick (fun _ -> trigger (Select {TopLeft = pos; BottomRight = pos}))
       OnDoubleClick (fun _ -> trigger(StartEdit(pos)) ) 
-      OnMouseMove <| onMouseMove trigger pos state  ]
-    [ str (Option.defaultValue "#ERR" value) ]
+      OnMouseMove (onMouseMove trigger pos state) ]
+    [ str (value |> Option.defaultValue "#ERR") ]
 
 let renderCell trigger pos state =
   let value = Map.tryFind pos state.Cells
-  if state.Active = Some pos then
+  match state.Editor with
+  | Active coord when coord = pos ->
     renderEditor trigger pos state (Option.defaultValue "" value)
-  else
+  | _ ->
     let value =
       match value with
       | Some value ->
@@ -112,12 +116,17 @@ let renderCell trigger pos state =
 let renderDebugPane state =
   div[][
     pre[][
-      sprintf "State: %A" state |> str
+      sprintf "%A" state |> str
     ]
   ]
 #endif
 
 let view state trigger =
+#if DEBUG
+  let trigger event =
+    printfn "Event: %A" event
+    trigger event
+#endif
   let empty = td [] []
   let header h = th [] [str h]
   let headers = state.Cols |> Array.map (Column.pretty >> header)
