@@ -51,6 +51,10 @@ let renderEditor (trigger:Event -> unit) pos state value =
       AutoFocus true
       OnKeyDown (getKeyPressEvent state trigger)
       OnInput (fun e -> trigger (UpdateValue (pos, e.target ? value )))
+      Ref (fun element ->
+        if not (isNull element) then
+          element?focus()
+      )
       Value value ]
   ]
 
@@ -104,6 +108,13 @@ let renderCell trigger pos state =
       | _ -> Some ""
     renderView trigger pos state value
 
+let renderDebugPane state =
+  div[][
+    pre[][
+      sprintf "State: %A" state |> str
+    ]
+  ]
+
 let view state trigger =
   let empty = td [] []
   let header h = th [] [str h]
@@ -117,7 +128,14 @@ let view state trigger =
        yield! cells |]
   let rows = state.Rows |> Array.map (fun r -> tr [] (cells r))
 
-  table [] [
-    tr [] headers
-    tbody [] rows
+  div [] [
+    table [] [
+      tr [] headers
+      tbody [] rows
+    ]
+
+#if DEBUG
+    renderDebugPane state
+#endif
+
   ]
