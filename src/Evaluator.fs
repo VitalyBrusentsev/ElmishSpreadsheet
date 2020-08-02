@@ -2,25 +2,11 @@ module Evaluator
 
 open FsToolkit.ErrorHandling
 
-type ColumnName = private { Col: char }
-
-module ColumnName =
-  let ofChar c = { Col = System.Char.ToUpper c } 
-  let pretty c = c.Col |> string
-  let tryPrev c = 
-    if c.Col = 'A' then 
-      None 
-    else 
-      (int c.Col) - 1 |> char |> ofChar |> Some
-  let tryNext c (maxColumns: int) = 
-    if (int c.Col) - (int 'A') + 1 = maxColumns then
-      None 
-    else 
-      (int c.Col) + 1 |> char |> ofChar |> Some
+open ColumnName
 
 open Parsec
 
-type Position = ColumnName * int
+type Position = Column * int
 
 type Expr =
   | Reference of Position
@@ -33,7 +19,7 @@ type Expr =
 
 // Basics: operators (+, -, *, /), cell reference (e.g. A10), number (e.g. 123)
 let operator = char '+' <|> char '-' <|> char '*' <|> char '/'
-let reference = letter <*> integer |> map (fun (c,d) -> ((ColumnName.ofChar c), d) |> Reference )
+let reference = letter <*> integer |> map (fun (c,d) -> ((Column.ofChar c), d) |> Reference )
 let number = integer |> map Number
 
 // Nested operator uses need to be parethesized, for example (1 + (3 * 4)).

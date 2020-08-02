@@ -3,8 +3,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Mode.fs" />
     <Compile Include="Parsec.fs" />
+    <Compile Include="ColumnName.fs" />
     <Compile Include="Evaluator.fs" />
     <Compile Include="Models.fs" />
     <Compile Include="Views.fs" />

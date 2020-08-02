@@ -4,6 +4,7 @@ open Fable.React
 open Fable.React.Props
 open Fable.Core.JsInterop
 
+open ColumnName
 open Evaluator
 open Models
 
@@ -32,8 +33,8 @@ let getPosition ((col, row): Position) (direction: Direction) cols rows =
     match direction with
     | Up -> if row = 1 then None else Some (col, row - 1)
     | Down -> if row = rows then None else Some (col, row + 1)
-    | Left -> ColumnName.tryPrev col |> Option.map (fun col1 -> (col1, row))
-    | Right -> ColumnName.tryNext col cols |> Option.map (fun col1 -> col1, row)
+    | Left -> Column.tryPrev col |> Option.map (fun col1 -> (col1, row))
+    | Right -> Column.tryNext col |> Option.map (fun col1 -> col1, row)
 
 let getMovement (state: SpreadsheetState) (direction: Direction) : Movement =
     match state.Active with
@@ -73,7 +74,7 @@ let renderEditor (trigger:Event -> unit) pos state value =
       Value value ]
   ]
 
-let prettyPos pos = sprintf "%s%d" (pos |> fst |> ColumnName.pretty) (pos |> snd)
+let prettyPos pos = sprintf "%s%d" (pos |> fst |> Column.pretty) (pos |> snd)
 
 let pretty range = 
   sprintf "%s:%s" (range.TopLeft |> prettyPos) (range.BottomRight |> prettyPos)
@@ -126,7 +127,7 @@ let renderCell trigger pos state =
 let view state trigger =
   let empty = td [] []
   let header h = th [] [str h]
-  let headers = state.Cols |> Array.map (ColumnName.pretty >> header)
+  let headers = state.Cols |> Array.map (Column.pretty >> header)
   let headers = [| yield empty; yield! headers |]
 
   let row cells = tr [] cells

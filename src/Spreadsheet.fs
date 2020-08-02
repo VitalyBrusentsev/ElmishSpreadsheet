@@ -3,7 +3,7 @@ module Spreadsheet
 open Elmish
 open Elmish.React
 
-open Evaluator
+open ColumnName
 open Models
 
 // ----------------------------------------------------------------------------
@@ -34,10 +34,10 @@ open Views
 // ----------------------------------------------------------------------------
 
 let initial () =
-  { Cols = [|'A' .. 'K'|] |> Array.map ColumnName.ofChar
+  { Cols = [|'A' .. 'K'|] |> Array.map Column.ofChar
     Rows = [|1 .. 15|]
     Active = None
-    Range = Some { TopLeft = (ColumnName.ofChar 'B', 2); BottomRight = (ColumnName.ofChar 'D', 5) }
+    Range = Some { TopLeft = (Column.ofChar 'B', 2); BottomRight = (Column.ofChar 'D', 5) }
     Cells = Map.empty }, Cmd.none
 
 open Fable.Elmish.ElmishToReact

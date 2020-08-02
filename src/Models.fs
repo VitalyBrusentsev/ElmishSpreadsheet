@@ -1,5 +1,6 @@
 module Models
 
+open ColumnName
 open Evaluator
 
 type Range = { TopLeft: Position; BottomRight: Position }
@@ -19,7 +20,7 @@ type SpreadsheetState =
   { Rows : int[]
     Active : Position option
     Range: Range option
-    Cols : ColumnName[]
+    Cols : Column[]
     Cells : Map<Position, string> }
 
 type Movement =
