@@ -34,8 +34,8 @@ open Views
 // ----------------------------------------------------------------------------
 
 let initial () =
-  { Cols = ['A' .. 'K'] |> List.map ColumnName.ofChar
-    Rows = [1 .. 15]
+  { Cols = [|'A' .. 'K'|] |> Array.map ColumnName.ofChar
+    Rows = [|1 .. 15|]
     Active = None
     Range = Some { TopLeft = (ColumnName.ofChar 'B', 2); BottomRight = (ColumnName.ofChar 'D', 5) }
     Cells = Map.empty }, Cmd.none

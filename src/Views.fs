@@ -28,26 +28,19 @@ let (|Arrow|_|) (ke: Browser.Types.KeyboardEvent) =
     | _ -> None
 
 
-let getPosition ((col, row): Position) (direction: Direction) =
+let getPosition ((col, row): Position) (direction: Direction) cols rows =
     match direction with
-    | Up -> Some (col, row - 1)
-    | Down -> Some (col, row + 1)
-    | Left -> 
-        match ColumnName.tryPrev col with
-        | Some col1 -> Some (col1, row)
-        | None -> None
-      
-    | Right -> 
-        match ColumnName.tryNext col with
-        | Some col1 -> Some (col1, row)
-        | None -> None
+    | Up -> if row = 1 then None else Some (col, row - 1)
+    | Down -> if row = rows then None else Some (col, row + 1)
+    | Left -> ColumnName.tryPrev col |> Option.map (fun col1 -> (col1, row))
+    | Right -> ColumnName.tryNext col cols |> Option.map (fun col1 -> col1, row)
 
 let getMovement (state: SpreadsheetState) (direction: Direction) : Movement =
     match state.Active with
     | None -> Invalid
     | Some position ->
-        match (getPosition position direction) with
-        | Some (col, row) when List.contains col state.Cols && List.contains row state.Rows ->
+        match (getPosition position direction (state.Cols |> Array.length) (state.Rows |> Array.length)) with
+        | Some (col, row) when Array.contains col state.Cols && Array.contains row state.Rows ->
             MoveTo (col, row)
         | _ -> Invalid
 
@@ -133,14 +126,15 @@ let renderCell trigger pos state =
 let view state trigger =
   let empty = td [] []
   let header h = th [] [str h]
-  let headers = state.Cols |> List.map (ColumnName.pretty >> header)
-  let headers = empty::headers
+  let headers = state.Cols |> Array.map (ColumnName.pretty >> header)
+  let headers = [| yield empty; yield! headers |]
 
   let row cells = tr [] cells
   let cells n =
-    let cells = state.Cols |> List.map (fun h -> renderCell trigger (h, n) state)
-    header (string n) :: cells
-  let rows = state.Rows |> List.map (fun r -> tr [] (cells r))
+    let cells = state.Cols |> Array.map (fun h -> renderCell trigger (h, n) state)
+    [| yield header (string n)
+       yield! cells |]
+  let rows = state.Rows |> Array.map (fun r -> tr [] (cells r))
 
   table [] [
     tr [] headers

@@ -12,8 +12,8 @@ module ColumnName =
       None 
     else 
       (int c.Col) - 1 |> char |> ofChar |> Some
-  let tryNext c = 
-    if c.Col = 'K' then 
+  let tryNext c (maxColumns: int) = 
+    if (int c.Col) - (int 'A') + 1 = maxColumns then
       None 
     else 
       (int c.Col) + 1 |> char |> ofChar |> Some

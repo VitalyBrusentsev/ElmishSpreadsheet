@@ -16,10 +16,10 @@ type EditorState =
   | Selection of Range
 
 type SpreadsheetState =
-  { Rows : int list
+  { Rows : int[]
     Active : Position option
     Range: Range option
-    Cols : ColumnName list
+    Cols : ColumnName[]
     Cells : Map<Position, string> }
 
 type Movement =
