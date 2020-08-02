@@ -26,6 +26,4 @@ type Movement =
     | MoveTo of Position
     | Invalid
 
-type Direction = Up | Down | Left | Right
-
 

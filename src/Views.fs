@@ -7,27 +7,7 @@ open Fable.Core.JsInterop
 open Cell
 open Evaluator
 open Models
-
-let keyMatch expected result (ke:Browser.Types.KeyboardEvent) = 
-  if int ke.keyCode = expected then 
-    Some result 
-  else 
-    None
-
-let (|Escape|_|) = keyMatch 27 Escape 
-let (|Tab|_|) =  keyMatch 9 Tab 
-let (|Enter|_|) = keyMatch 13 Enter
-let (|Arrow|_|) (ke: Browser.Types.KeyboardEvent) =
-  if ke.ctrlKey || ke.shiftKey then 
-    None
-  else 
-    match int ke.keyCode with
-    | 37 -> Arrow Left |> Some
-    | 38 -> Arrow Up |> Some
-    | 39 -> Arrow Right |> Some
-    | 40 -> Arrow Down |> Some
-    | _ -> None
-
+open Keyboard
 
 let getPosition ((col, row): Position) (direction: Direction) cols rows =
     match direction with
