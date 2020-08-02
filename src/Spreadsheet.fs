@@ -38,6 +38,9 @@ let initial () =
     Rows = [|1 .. 15|]
     Active = None
     Range = Some { TopLeft = (Column.ofChar 'B', 2); BottomRight = (Column.ofChar 'D', 5) }
+#if DEBUG
+    DebugMessage = ""
+#endif    
     Cells = Map.empty }, Cmd.none
 
 open Fable.Elmish.ElmishToReact

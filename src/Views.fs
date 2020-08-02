@@ -108,12 +108,14 @@ let renderCell trigger pos state =
       | _ -> Some ""
     renderView trigger pos state value
 
+#if DEBUG
 let renderDebugPane state =
   div[][
     pre[][
       sprintf "State: %A" state |> str
     ]
   ]
+#endif
 
 let view state trigger =
   let empty = td [] []

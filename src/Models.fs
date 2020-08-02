@@ -20,7 +20,11 @@ type SpreadsheetState =
     Active : Position option
     Range: Range option
     Cols : Column[]
-    Cells : Map<Position, string> }
+    Cells : Map<Position, string>
+#if DEBUG
+    DebugMessage: string
+#endif
+  }
 
 type Movement =
     | MoveTo of Position
