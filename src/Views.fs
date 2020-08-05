@@ -46,7 +46,7 @@ let getKeyPressEvent (model: SpreadsheetModel) trigger ke =
   | _ -> ()
 
 let renderEditor (trigger:Event -> unit) pos state value =
-  td [ Class "selected"] [
+  td [ Class "editor"] [
     input [
       AutoFocus true
       OnKeyDown (getKeyPressEvent state trigger)
@@ -74,10 +74,11 @@ let mapPosToStyles editor pos (value: string option) =
   match editor with
   | Selection range when inRange range pos -> [
     if value.IsSome then yield BackgroundColor activeBackgroundColor
-    if range.TopLeft |> fst = fst pos then yield BorderLeftColor activeBorderColor
-    if range.TopLeft |> snd = snd pos then yield BorderTopColor activeBorderColor
-    if range.BottomRight |> fst = fst pos then yield BorderRightColor activeBorderColor
-    if range.BottomRight |> snd = snd pos then yield BorderBottomColor activeBorderColor ]
+    // if range.TopLeft |> fst = fst pos then yield BorderLeftColor activeBorderColor
+    // if range.TopLeft |> snd = snd pos then yield BorderTopColor activeBorderColor
+    // if range.BottomRight |> fst = fst pos then yield BorderRightColor activeBorderColor
+    // if range.BottomRight |> snd = snd pos then yield BorderBottomColor activeBorderColor 
+    ]
   | _ -> []
 
 let onMouseMove trigger pos state (e: Browser.Types.MouseEvent) = 
