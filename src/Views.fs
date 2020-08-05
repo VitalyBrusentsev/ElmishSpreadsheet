@@ -41,8 +41,8 @@ let getKeyPressEvent (model: SpreadsheetModel) trigger ke =
 
   | Arrow direction ->
     match getMovement model direction with
-        | Invalid -> ()
-        | MoveTo position -> trigger(StartEdit(position))
+    | Invalid -> ()
+    | MoveTo pos -> trigger <| StartEdit pos
   | _ -> ()
 
 let renderEditor (trigger:Event -> unit) pos state value =
@@ -50,7 +50,7 @@ let renderEditor (trigger:Event -> unit) pos state value =
     input [
       AutoFocus true
       OnKeyDown (getKeyPressEvent state trigger)
-      OnInput (fun e -> trigger (UpdateValue (pos, e.target ? value )))
+      OnInput (fun e -> trigger (UpdateValue (pos, e.target?value )))
       Ref (fun element ->
         if not (isNull element) then
           element?focus()
