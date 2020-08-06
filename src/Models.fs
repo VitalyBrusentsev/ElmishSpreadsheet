@@ -9,6 +9,8 @@ type Event =
   | StartEdit of Position
   | CancelEdit
   | Select of Range
+  | SelectColumn of Column
+  | SelectRow of int
 
 type EditorState = 
   | Nothing

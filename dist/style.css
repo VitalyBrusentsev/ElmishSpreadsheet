@@ -20,11 +20,12 @@ th {
   font-size: small;
 }
 
-td.selected {
-  padding: 0px;
+th {
+  cursor: pointer;
 }
 
-td.editor {
+td.selected {
+  padding: 0px;
 }
 
 td input {

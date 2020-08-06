@@ -82,7 +82,7 @@ let mapPosToStyles editor pos (value: string option) =
   | _ -> []
 
 let onMouseMove trigger pos state (e: Browser.Types.MouseEvent) = 
-  if e.buttons = 1.0 then 
+  if e.buttons = 1.0 then
     let start = 
       match state.Editor with 
       | Nothing | Active _ -> pos
@@ -129,14 +129,18 @@ let view state trigger =
     trigger event
 #endif
   let empty = td [] []
-  let header h = th [] [str h]
-  let headers = state.Cols |> Array.map (Column.pretty >> header)
+  let colHeader h = 
+    th [ OnClick (fun _ -> SelectColumn h |> trigger) ] 
+       [ h |> Column.pretty |> str ]
+  let headers = state.Cols |> Array.map colHeader
   let headers = [| yield empty; yield! headers |]
 
-  let row cells = tr [] cells
+  let rowHeader row =
+    th [ OnClick (fun _ -> SelectRow row |> trigger)] [ row |> string |> str]
+
   let cells n =
     let cells = state.Cols |> Array.map (fun h -> renderCell trigger (h, n) state)
-    [| yield header (string n)
+    [| yield rowHeader n
        yield! cells |]
   let rows = state.Rows |> Array.map (fun r -> tr [] (cells r))
 

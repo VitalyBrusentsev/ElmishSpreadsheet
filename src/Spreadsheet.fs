@@ -11,23 +11,29 @@ open Models
 // ----------------------------------------------------------------------------
 
 let update msg state =
-  match state.Editor, msg with
-  | _, StartEdit(pos) ->
+  match msg with
+  | StartEdit(pos) ->
     { state with Editor = Active pos }, Cmd.none
 
-  | Active, CancelEdit ->
+  | CancelEdit ->
     { state with Editor = Nothing }, Cmd.none
 
-  | Active, UpdateValue(pos, value) ->
-  let newCells =
+  | UpdateValue(pos, value) ->
+    let newCells =
       if value = ""
           then Map.remove pos state.Cells
           else Map.add pos value state.Cells
-  { state with Cells = newCells }, Cmd.none
-  | _, Select range -> 
-    { state with Editor = Selection range }, Cmd.ofMsg CancelEdit
-  | _ ->
-    state, Cmd.none
+    { state with Cells = newCells }, Cmd.none
+  | Select range -> 
+    { state with Editor = Selection range }, Cmd.none
+  | SelectColumn column ->
+    let range = { TopLeft = column, 1
+                  BottomRight = column, state.Rows |> Array.length }
+    { state with Editor = Selection range}, Cmd.none
+  | SelectRow row ->
+    let range = { TopLeft = 1 |> Column.ofIndex, row
+                  BottomRight = state.Cols |> Array.length |> Column.ofIndex, row }
+    { state with Editor = Selection range}, Cmd.none
 
 open Views
 

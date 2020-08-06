@@ -8,6 +8,9 @@ module Column =
 
   let ofIndex (i: int) = 
     (int 'A' + i - 1) |> char |> Col
+  
+  let toIndex (Col c) =
+    (int c - int 'A' + 1)
 
   let pretty (Col c) = 
     c |> string 
