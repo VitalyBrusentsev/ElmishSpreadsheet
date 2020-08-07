@@ -34,6 +34,8 @@ let update msg state =
     let range = { TopLeft = { Column = 1 |> Column.ofIndex; Row = row }
                   BottomRight = { Column = state.Cols |> Array.length |> Column.ofIndex; Row =row } }
     { state with Editor = Selection range}, Cmd.none
+  | ChangeSelection range ->
+    { state with Editor = ChangingSelection range }, Cmd.none
 
 open Views
 

@@ -23,7 +23,7 @@ let getMovement (model: SpreadsheetModel) (direction: Direction) : Movement =
     | Some (col, row) when Array.contains col model.Cols && Array.contains row model.Rows ->
         MoveTo {Column = col; Row = row }
     | _ -> Invalid
-  | Nothing | Selection _ -> Invalid
+  | Nothing | Selection _ | ChangingSelection _ -> Invalid
 
 let getKeyPressEvent (model: SpreadsheetModel) trigger ke =
   match ke with
@@ -72,7 +72,7 @@ let mapPosToStyles editor pos (value: string option) =
   let activeBorderColor = "#1a73e8"
   let activeBackgroundColor = "rgba(23, 102, 202, 0.2)"
   match editor with
-  | Selection range when inRange range pos -> [
+  | Selection range | ChangingSelection range when inRange range pos -> [
     if value.IsSome then yield BackgroundColor activeBackgroundColor
     // if range.TopLeft |> fst = fst pos then yield BorderLeftColor activeBorderColor
     // if range.TopLeft |> snd = snd pos then yield BorderTopColor activeBorderColor
@@ -85,10 +85,14 @@ let onMouseMove trigger pos state (e: Browser.Types.MouseEvent) =
   if e.buttons = 1.0 then
     let start = 
       match state.Editor with 
-      | Nothing | Active _ -> pos
-      | Selection range -> range.TopLeft
+      | Nothing | Active _ | Selection _ -> pos
+      | ChangingSelection range -> range.TopLeft
     e.preventDefault()
-    trigger (Select { TopLeft = start; BottomRight = pos })
+    trigger (ChangeSelection { TopLeft = start; BottomRight = pos })
+  else
+    match state.Editor with
+    | ChangingSelection range -> trigger (Select range)
+    | _ -> ()
 
 let renderView trigger (pos: Position) state (value:option<_>) =
   td

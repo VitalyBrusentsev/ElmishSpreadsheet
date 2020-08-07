@@ -11,11 +11,13 @@ type Event =
   | Select of Range
   | SelectColumn of Column
   | SelectRow of int
+  | ChangeSelection of Range
 
 type EditorState = 
   | Nothing
   | Active of Position
   | Selection of Range
+  | ChangingSelection of Range
 
 type SpreadsheetModel =
   { Rows : int[]
