@@ -17,7 +17,7 @@ type Expr =
 
 // Basics: operators (+, -, *, /), cell reference (e.g. A10), number (e.g. 123)
 let operator = char '+' <|> char '-' <|> char '*' <|> char '/'
-let reference = letter <*> integer |> map (fun (c,d) -> ((Column.ofChar c), d) |> Reference )
+let reference = letter <*> integer |> map (fun (c,d) -> { Column = Column.ofChar c; Row = d } |> Reference )
 let number = integer |> map Number
 
 // Nested operator uses need to be parethesized, for example (1 + (3 * 4)).

@@ -27,12 +27,12 @@ let update msg state =
   | Select range -> 
     { state with Editor = Selection range }, Cmd.none
   | SelectColumn column ->
-    let range = { TopLeft = column, 1
-                  BottomRight = column, state.Rows |> Array.length }
+    let range = { TopLeft = { Column = column; Row = 1 }
+                  BottomRight = { Column = column; Row = state.Rows |> Array.length } }
     { state with Editor = Selection range}, Cmd.none
   | SelectRow row ->
-    let range = { TopLeft = 1 |> Column.ofIndex, row
-                  BottomRight = state.Cols |> Array.length |> Column.ofIndex, row }
+    let range = { TopLeft = { Column = 1 |> Column.ofIndex; Row = row }
+                  BottomRight = { Column = state.Cols |> Array.length |> Column.ofIndex; Row =row } }
     { state with Editor = Selection range}, Cmd.none
 
 open Views
@@ -44,7 +44,9 @@ open Views
 let initial () =
   { Cols = [|'A' .. 'K'|] |> Array.map Column.ofChar
     Rows = [|1 .. 15|]
-    Editor = Selection { TopLeft = (Column.ofChar 'B', 2); BottomRight = (Column.ofChar 'D', 5) }
+    Editor = Selection { 
+                         TopLeft = { Column = Column.ofChar 'B'; Row = 2 }
+                         BottomRight = { Column = Column.ofChar 'D' ; Row = 5 } }
     Cells = Map.empty }, Cmd.none
 
 open Fable.Elmish.ElmishToReact

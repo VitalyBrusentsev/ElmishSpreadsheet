@@ -9,7 +9,7 @@ open Evaluator
 open Models
 open Keyboard
 
-let getPosition ((col, row): Position) (direction: Direction) cols rows =
+let getPosition ({ Column = col; Row = row }) (direction: Direction) cols rows =
   match direction with
   | Up -> if row = 1 then None else Some (col, row - 1)
   | Down -> if row = rows then None else Some (col, row + 1)
@@ -21,7 +21,7 @@ let getMovement (model: SpreadsheetModel) (direction: Direction) : Movement =
   | Active position ->
     match (getPosition position direction (model.Cols |> Array.length) (model.Rows |> Array.length)) with
     | Some (col, row) when Array.contains col model.Cols && Array.contains row model.Rows ->
-        MoveTo (col, row)
+        MoveTo {Column = col; Row = row }
     | _ -> Invalid
   | Nothing | Selection _ -> Invalid
 
@@ -58,14 +58,14 @@ let renderEditor (trigger:Event -> unit) pos state value =
       Value value ]
   ]
 
-let prettyPos pos = sprintf "%s%d" (pos |> fst |> Column.pretty) (pos |> snd)
+let prettyPos pos = sprintf "%s%d" (pos.Column |> Column.pretty) pos.Row
 
 let pretty range = 
   sprintf "%s:%s" (range.TopLeft |> prettyPos) (range.BottomRight |> prettyPos)
 
-let inRange range (x,y) = 
-  let x1, y1 = range.TopLeft
-  let x2, y2 = range.BottomRight
+let inRange range { Column = x; Row = y} = 
+  let { Column = x1; Row = y1 } = range.TopLeft
+  let { Column = x2; Row = y2 } = range.BottomRight
   x <=x2 && x >= x1 && y <= y2 && y >= y1
 
 let mapPosToStyles editor pos (value: string option) = 
@@ -90,7 +90,7 @@ let onMouseMove trigger pos state (e: Browser.Types.MouseEvent) =
     e.preventDefault()
     trigger (Select { TopLeft = start; BottomRight = pos })
 
-let renderView trigger pos state (value:option<_>) =
+let renderView trigger (pos: Position) state (value:option<_>) =
   td
     [ Style [
         if value.IsNone then yield Background "#ffb0b0"
@@ -139,7 +139,7 @@ let view state trigger =
     th [ OnClick (fun _ -> SelectRow row |> trigger)] [ row |> string |> str]
 
   let cells n =
-    let cells = state.Cols |> Array.map (fun h -> renderCell trigger (h, n) state)
+    let cells = state.Cols |> Array.map (fun h -> renderCell trigger { Column = h; Row = n } state)
     [| yield rowHeader n
        yield! cells |]
   let rows = state.Rows |> Array.map (fun r -> tr [] (cells r))

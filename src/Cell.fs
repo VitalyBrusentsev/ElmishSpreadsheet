@@ -27,4 +27,4 @@ module Column =
     else 
       (int c) + 1 |> char |> ofChar |> Some
 
-type Position = Column * int
+type Position = { Column: Column; Row: int }
