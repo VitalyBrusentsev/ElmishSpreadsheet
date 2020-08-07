@@ -58,15 +58,18 @@ let renderEditor (trigger:Event -> unit) pos state value =
       Value value ]
   ]
 
-let prettyPos pos = sprintf "%s%d" (pos.Column |> Column.pretty) pos.Row
+let prettyPos pos = (pos.Column |> Column.pretty) + string pos.Row
 
 let pretty range = 
-  sprintf "%s:%s" (range.TopLeft |> prettyPos) (range.BottomRight |> prettyPos)
+  (range.Start |> prettyPos) + ":" + (range.End |> prettyPos)
+
+let minmax a b =
+  if a < b then (a, b) else (b, a)
 
 let inRange range { Column = x; Row = y} = 
-  let { Column = x1; Row = y1 } = range.TopLeft
-  let { Column = x2; Row = y2 } = range.BottomRight
-  x <=x2 && x >= x1 && y <= y2 && y >= y1
+  let (x1, x2) = minmax range.Start.Column range.End.Column
+  let (y1, y2) = minmax range.Start.Row range.End.Row
+  x <=x2 && x >= x1 && y <= y2 && y >= y1pm
 
 let mapPosToStyles editor pos (value: string option) = 
   let activeBorderColor = "#1a73e8"
@@ -86,9 +89,9 @@ let onMouseMove trigger pos state (e: Browser.Types.MouseEvent) =
     let start = 
       match state.Editor with 
       | Nothing | Active _ | Selection _ -> pos
-      | ChangingSelection range -> range.TopLeft
+      | ChangingSelection range -> range.Start
     e.preventDefault()
-    trigger (ChangeSelection { TopLeft = start; BottomRight = pos })
+    trigger (ChangeSelection { Start = start; End = pos })
   else
     match state.Editor with
     | ChangingSelection range -> trigger (Select range)
@@ -99,7 +102,7 @@ let renderView trigger (pos: Position) state (value:option<_>) =
     [ Style [
         if value.IsNone then yield Background "#ffb0b0"
         yield! mapPosToStyles state.Editor pos value ]
-      OnClick (fun _ -> trigger (Select {TopLeft = pos; BottomRight = pos}))
+      OnClick (fun _ -> trigger (Select {Start = pos; End = pos}))
       OnDoubleClick (fun _ -> trigger(StartEdit(pos)) ) 
       OnMouseMove (onMouseMove trigger pos state) ]
     [ str (value |> Option.defaultValue "#ERR") ]

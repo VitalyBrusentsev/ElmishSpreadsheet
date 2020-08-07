@@ -13,29 +13,29 @@ open Models
 let update msg state =
   match msg with
   | StartEdit(pos) ->
-    { state with Editor = Active pos }, Cmd.none
+    { state with Editor = Active pos }
 
   | CancelEdit ->
-    { state with Editor = Nothing }, Cmd.none
+    { state with Editor = Nothing }
 
   | UpdateValue(pos, value) ->
     let newCells =
       if value = ""
           then Map.remove pos state.Cells
           else Map.add pos value state.Cells
-    { state with Cells = newCells }, Cmd.none
+    { state with Cells = newCells }
   | Select range -> 
-    { state with Editor = Selection range }, Cmd.none
+    { state with Editor = Selection range }
   | SelectColumn column ->
-    let range = { TopLeft = { Column = column; Row = 1 }
-                  BottomRight = { Column = column; Row = state.Rows |> Array.length } }
-    { state with Editor = Selection range}, Cmd.none
+    let range = { Start = { Column = column; Row = 1 }
+                  End = { Column = column; Row = state.Rows |> Array.length } }
+    { state with Editor = Selection range}
   | SelectRow row ->
-    let range = { TopLeft = { Column = 1 |> Column.ofIndex; Row = row }
-                  BottomRight = { Column = state.Cols |> Array.length |> Column.ofIndex; Row =row } }
-    { state with Editor = Selection range}, Cmd.none
+    let range = { Start = { Column = 1 |> Column.ofIndex; Row = row }
+                  End = { Column = state.Cols |> Array.length |> Column.ofIndex; Row =row } }
+    { state with Editor = Selection range}
   | ChangeSelection range ->
-    { state with Editor = ChangingSelection range }, Cmd.none
+    { state with Editor = ChangingSelection range }
 
 open Views
 
@@ -47,13 +47,13 @@ let initial () =
   { Cols = [|'A' .. 'K'|] |> Array.map Column.ofChar
     Rows = [|1 .. 15|]
     Editor = Selection { 
-                         TopLeft = { Column = Column.ofChar 'B'; Row = 2 }
-                         BottomRight = { Column = Column.ofChar 'D' ; Row = 5 } }
-    Cells = Map.empty }, Cmd.none
+                         Start = { Column = Column.ofChar 'B'; Row = 2 }
+                         End = { Column = Column.ofChar 'D' ; Row = 5 } }
+    Cells = Map.empty }
 
 open Fable.Elmish.ElmishToReact
 
-let private program = Program.mkProgram initial update view
+let private program = Program.mkSimple initial update view
 let externalisedProgram =
   Externalised.externalise program
 

@@ -2,7 +2,7 @@ module Models
 
 open Cell
 
-type Range = { TopLeft: Position; BottomRight: Position }
+type Range = { Start: Position; End: Position }
 
 type Event =
   | UpdateValue of Position * string
