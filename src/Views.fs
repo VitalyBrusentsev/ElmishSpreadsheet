@@ -69,7 +69,7 @@ let minmax a b =
 let inRange range { Column = x; Row = y} = 
   let (x1, x2) = minmax range.Start.Column range.End.Column
   let (y1, y2) = minmax range.Start.Row range.End.Row
-  x <=x2 && x >= x1 && y <= y2 && y >= y1pm
+  x <=x2 && x >= x1 && y <= y2 && y >= y1
 
 let mapPosToStyles editor pos (value: string option) = 
   let activeBorderColor = "#1a73e8"
