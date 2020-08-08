@@ -9,6 +9,7 @@ open Evaluator
 open Models
 open Keyboard
 
+
 let getPosition ({ Column = col; Row = row }) (direction: Direction) cols rows =
   match direction with
   | Up -> if row = 1 then None else Some (col, row - 1)
@@ -71,18 +72,23 @@ let inRange range { Column = x; Row = y} =
   let (y1, y2) = minmax range.Start.Row range.End.Row
   x <=x2 && x >= x1 && y <= y2 && y >= y1
 
-let mapPosToStyles editor pos (value: string option) = 
-  let activeBorderColor = "#1a73e8"
-  let activeBackgroundColor = "rgba(23, 102, 202, 0.2)"
-  match editor with
-  | Selection range | ChangingSelection range when inRange range pos -> [
-    if value.IsSome then yield BackgroundColor activeBackgroundColor
-    // if range.TopLeft |> fst = fst pos then yield BorderLeftColor activeBorderColor
-    // if range.TopLeft |> snd = snd pos then yield BorderTopColor activeBorderColor
-    // if range.BottomRight |> fst = fst pos then yield BorderRightColor activeBorderColor
-    // if range.BottomRight |> snd = snd pos then yield BorderBottomColor activeBorderColor 
-    ]
-  | _ -> []
+let getCellClasses state pos = [
+  match state.Editor with
+  | Selection range | ChangingSelection range ->
+    let (x1, x2) = minmax range.Start.Column range.End.Column
+    let (y1, y2) = minmax range.Start.Row range.End.Row
+    if pos.Column <=x2 && pos.Column >= x1 then
+      if pos.Row <= y2 && pos.Row >= y1 then
+        yield "selectedInRange", true
+        if x1 = pos.Column then yield "firstColumn", true
+        if y1 = pos.Row then yield "firstRow", true
+        if x2 = pos.Column then yield "lastColumn", true
+        if y2 = pos.Row then yield "lastRow", true
+      if pos.Row = y2 + 1 then
+        yield "pastRow", true
+  | _ -> ()
+
+]
 
 let onMouseMove trigger pos state (e: Browser.Types.MouseEvent) = 
   if e.buttons = 1.0 then
@@ -99,9 +105,7 @@ let onMouseMove trigger pos state (e: Browser.Types.MouseEvent) =
 
 let renderView trigger (pos: Position) state (value:option<_>) =
   td
-    [ Style [
-        if value.IsNone then yield Background "#ffb0b0"
-        yield! mapPosToStyles state.Editor pos value ]
+    [ classList (getCellClasses state pos)
       OnClick (fun _ -> trigger (Select {Start = pos; End = pos}))
       OnDoubleClick (fun _ -> trigger(StartEdit(pos)) ) 
       OnMouseMove (onMouseMove trigger pos state) ]

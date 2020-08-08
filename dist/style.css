@@ -5,8 +5,7 @@ body {
 
 table {
   border-spacing: 0px;
-  border-bottom: 1px solid #e0e0e0;
-  border-right: 1px solid #e0e0e0;
+  border-style: none;
 }
 
 td,
@@ -20,12 +19,49 @@ th {
   font-size: small;
 }
 
+td:last-child, th:last-child {
+  border-right: 1px solid #e0e0e0;
+}
+
+tr:last-child > td {
+  border-bottom: 1px solid #e0e0e0;
+}
+
 th {
   cursor: pointer;
+  user-select: none;
 }
 
 td.selected {
   padding: 0px;
+}
+
+td.selectedInRange {
+  background-color: rgba(23, 102, 202, 0.2);
+}
+
+td.selectedInRange.firstColumn {
+  border-left-color: #1a73e8;
+}
+
+td.selectedInRange.firstRow {
+  border-top-color: #1a73e8;
+}
+
+td.selectedInRange.lastColumn {
+  border-right-color: #1a73e8;
+}
+
+td.selectedInRange.lastColumn + td {
+  border-left-color: #1a73e8;
+}
+
+td.selectedInRange.lastRow {
+  border-bottom-color: #1a73e8;
+}
+
+td.pastRow {
+  border-top-color: #1a73e8;
 }
 
 td input {
