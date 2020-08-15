@@ -27,6 +27,14 @@ module.exports = (env, argv) => {
                 test: /\.fs(x|proj)?$/,
                 loader: "fable-loader",
                 options: { babel: babelOptions }
+            },
+            {
+                test: /\.(css|sass|scss)$/i,
+                use: [
+                    "style-loader",
+                    "css-loader",
+                    "sass-loader"
+                ]
             }]
         },
         // optimization: {

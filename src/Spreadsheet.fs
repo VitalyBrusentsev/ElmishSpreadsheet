@@ -60,3 +60,4 @@ let externalisedProgram =
 let private spreadSheetReactComponent = elmishToReact externalisedProgram
 
 ReactToWebComponents.register "spreadsheet-component" spreadSheetReactComponent
+Fable.Core.JsInterop.importSideEffects "./styles/main.scss"
