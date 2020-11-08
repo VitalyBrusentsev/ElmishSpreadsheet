@@ -9,13 +9,13 @@
     <Compile Include="Models.fs" />
     <Compile Include="Keyboard.fs" />
     <Compile Include="Views.fs" />
-    <Compile Include="ElmishToReact.fs" />
     <Compile Include="ReactToWebComponent.fs" />
     <Compile Include="Spreadsheet.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fable.React" Version="6.2.0" />
     <PackageReference Include="Fable.Elmish.React" Version="3.0.1" />
+    <PackageReference Include="Feliz.UseElmish" Version="1.4.1" />
     <PackageReference Include="FsToolkit.ErrorHandling" Version="1.4.3" />
   </ItemGroup>
 </Project>
