@@ -25,5 +25,6 @@ jobs:
       with:
         node-version: '12'
     # Runs a single command using the runners shell
-    - run: npm install
+    - run: dotnet tool restore
+    - run: npm ci
     - run: npm run build
