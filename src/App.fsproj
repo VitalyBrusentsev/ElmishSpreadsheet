@@ -13,9 +13,10 @@
     <Compile Include="Spreadsheet.fs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Fable.React" Version="6.2.0" />
+    <PackageReference Include="Fable.React" Version="7.2.0" />
+    <PackageReference Include="Feliz" Version="1.22.0" />
     <PackageReference Include="Fable.Elmish.React" Version="3.0.1" />
-    <PackageReference Include="Feliz.UseElmish" Version="1.4.1" />
-    <PackageReference Include="FsToolkit.ErrorHandling" Version="1.4.3" />
+    <PackageReference Include="Feliz.UseElmish" Version="1.5.0" />
+    <PackageReference Include="FsToolkit.ErrorHandling" Version="2.0.0" />
   </ItemGroup>
 </Project>

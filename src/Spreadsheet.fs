@@ -51,7 +51,7 @@ let initial () =
     Cells = Map.empty }, Cmd.none
 
 let private spreadSheetReactComponent = React.functionComponent(fun () ->
-  let state, dispatch = React.useElmish(initial, update, [| |])
+  let state, dispatch = React.useElmish(initial, update, Array.empty)
   view state dispatch
 )
 
