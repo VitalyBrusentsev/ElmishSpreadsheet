@@ -7,13 +7,14 @@ Uses Fable compiler to convert F# source code to JavaScript and run in the brows
 
 ## Requirements
 
-- NET Core 2.2+
+- NET 5
 - Node.js 10.0+
 
 ## Installation
 To compile the project, run the following commands
 
 ```
+dotnet tool restore
 npm install
 npm run build
 ```

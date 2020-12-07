@@ -16,19 +16,13 @@ module.exports = (env, argv) => {
     const mode = argv.mode || "none";
     console.log("Building application in " + mode + " mode");
     return {
-        devtool: "source-map",
         mode: mode,
-        entry: "./src/App.fsproj",
+        entry: "./src/Spreadsheet.fs.js",
         devServer: {
             contentBase: path.join(__dirname, "./dist")
         },
         module: {
             rules: [{
-                test: /\.fs(x|proj)?$/,
-                loader: "fable-loader",
-                options: { babel: babelOptions }
-            },
-            {
                 test: /\.(css|sass|scss)$/i,
                 use: [
                     "style-loader",
