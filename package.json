@@ -4,11 +4,10 @@
   "description": "Fable Elmish web spreadsheet",
   "scripts": {
     "build": "dotnet fable src --run webpack --mode production",
-    "start": "dotnet fable src --run webpack-dev-server --mode development"
+    "start": "dotnet fable src --define DEBUG --run webpack-dev-server --mode development"
   },
   "dependencies": {
     "preact": "10.5.7",
-    "rxjs": "^6.6.2",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
     "react-to-webcomponent": "^1.4.0"
