@@ -50,10 +50,10 @@ let initial () =
                          End = { Column = Column.ofChar 'D' ; Row = 5 } }
     Cells = Map.empty }, Cmd.none
 
-let private spreadSheetReactComponent = React.functionComponent(fun () ->
+[<ReactComponent>]
+let Spreadsheet() =
   let state, dispatch = React.useElmish(initial, update, Array.empty)
   view state dispatch
-)
 
-ReactToWebComponents.register "spreadsheet-component" spreadSheetReactComponent
+ReactToWebComponents.register "spreadsheet-component" Spreadsheet
 Fable.Core.JsInterop.importSideEffects "./styles/main.scss"
