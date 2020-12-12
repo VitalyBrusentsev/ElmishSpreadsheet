@@ -4,7 +4,7 @@
   "description": "Fable Elmish web spreadsheet",
   "scripts": {
     "build": "dotnet fable src --run webpack --mode production",
-    "start": "dotnet fable src --define DEBUG --run webpack-dev-server --mode development"
+    "start": "dotnet fable watch src --define DEBUG --run webpack-dev-server --mode development"
   },
   "dependencies": {
     "preact": "10.5.7",
