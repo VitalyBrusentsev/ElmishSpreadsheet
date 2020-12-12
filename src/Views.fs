@@ -124,45 +124,39 @@ let renderCell trigger pos state =
       | _ -> Some ""
     renderView trigger pos state value
 
-#if DEBUG
-let renderDebugPane state =
-  div[][
-    pre[][
-      sprintf "%A" state |> str
-    ]
-  ]
-#endif
-
 let view state trigger =
 #if DEBUG
   let trigger event =
     printfn "Event: %A" event
     trigger event
 #endif
-  let empty = td [] []
-  let colHeader h = 
+
+  let colHeader h =
     th [ OnClick (fun _ -> SelectColumn h |> trigger) ] 
        [ h |> Column.pretty |> str ]
-  let headers = state.Cols |> Array.map colHeader
-  let headers = [| yield empty; yield! headers |]
 
   let rowHeader row =
-    th [ OnClick (fun _ -> SelectRow row |> trigger)] [ row |> string |> str]
+    th [ OnClick (fun _ -> SelectRow row |> trigger)] [ row |> string |> str ]
 
   let cells n =
-    let cells = state.Cols |> Array.map (fun h -> renderCell trigger { Column = h; Row = n } state)
-    [| yield rowHeader n
-       yield! cells |]
-  let rows = state.Rows |> Array.map (fun r -> tr [] (cells r))
+    [ yield rowHeader n
+      for col in state.Cols -> renderCell trigger { Column = col; Row = n } state ]
 
   div [] [
     table [] [
-      tr [] headers
-      tbody [] rows
+      thead [] [
+        tr [] [
+          yield td [] []
+          for col in state.Cols -> colHeader col ]
+      ]
+      tbody [] [
+        for row in state.Rows -> tr [] (cells row) ]
     ]
 
 #if DEBUG
-    renderDebugPane state
+    div [] [
+      pre [] [ sprintf "%A" state |> str ]
+    ]
 #endif
 
   ]
