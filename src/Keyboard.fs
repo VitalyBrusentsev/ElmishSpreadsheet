@@ -3,21 +3,21 @@ module Keyboard
 type Direction = Up | Down | Left | Right
 
 let keyMatch expected result (ke:Browser.Types.KeyboardEvent) = 
-  if int ke.keyCode = expected then 
+  if ke.key = expected then 
     Some result 
   else 
     None
 
-let (|Escape|_|) e = e |> keyMatch 27 Escape
-let (|Tab|_|) e = e |> keyMatch 9 Tab
-let (|Enter|_|) e = e |> keyMatch 13 Enter
+let (|Escape|_|) e = e |> keyMatch "Escape" Escape
+let (|Tab|_|) e = e |> keyMatch "Tab" Tab
+let (|Enter|_|) e = e |> keyMatch "Enter" Enter
 let (|Arrow|_|) (e: Browser.Types.KeyboardEvent) =
   if e.ctrlKey || e.shiftKey then 
     None
   else 
-    match int e.keyCode with
-    | 37 -> Arrow Left |> Some
-    | 38 -> Arrow Up |> Some
-    | 39 -> Arrow Right |> Some
-    | 40 -> Arrow Down |> Some
+    match e.key with
+    | "ArrowLeft" -> Arrow Left |> Some
+    | "ArrowUp" -> Arrow Up |> Some
+    | "ArrowRight" -> Arrow Right |> Some
+    | "ArrowDown" -> Arrow Down |> Some
     | _ -> None
