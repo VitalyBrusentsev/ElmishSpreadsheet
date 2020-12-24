@@ -10,7 +10,7 @@
     "preact": "10.5.7",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
-    "react-to-webcomponent": "^1.4.0"
+    "react-to-webcomponent": "^1.5.1"
   },
   "devDependencies": {
     "@babel/core": "7.12.9",
