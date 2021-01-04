@@ -17,18 +17,6 @@ let slot () =
   { Set = fun (Parser p) -> slot <- Some p },
   Parser(fun input -> slot.Value input)
 
-/// If the input matches the specified prefix, produce the specified result
-let prefix (prefix:list<'C>) result = Parser(fun (offset, input) ->
-  let rec loop (word:list<'C>) input =
-    match word, input with
-    | c::word, i::input when c = i -> loop word input
-    | [], input -> Some(input)
-    | _ -> None
-
-  match loop prefix input with
-  | Some(input) -> Some((offset+List.length prefix, input), result)
-  | _ -> None)
-
 /// Parser that succeeds when either of the two arguments succeed
 let (<|>) (Parser p1) (Parser p2) = Parser(fun input ->
   match p1 input with
