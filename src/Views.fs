@@ -142,7 +142,26 @@ let view state trigger =
     [ yield rowHeader n
       for col in state.Cols -> renderCell trigger { Column = col; Row = n } state ]
 
+  let renderFormula pos =
+    let value = Map.tryFind pos state.Cells
+    value |> Option.defaultValue "" |> str
+
   div [] [
+    div[][
+      span[] [
+        match state.Editor with
+        | Active p -> p |> prettyPos |> str
+        | Selection r | ChangingSelection r -> r.Start |> prettyPos |> str
+        | _ -> ()
+      ]
+      str " : "
+      span[] [
+        match state.Editor with
+        | Active p -> renderFormula p
+        | Selection r when r.Start = r.End -> renderFormula r.Start
+        | _ -> ()
+      ]
+    ]
     table [] [
       thead [] [
         tr [] [
