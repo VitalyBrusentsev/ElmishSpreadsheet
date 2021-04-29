@@ -18,6 +18,7 @@ module.exports = (env, argv) => {
     return {
         mode: mode,
         entry: "./src/Spreadsheet.fs.js",
+        devtool: "source-map",
         devServer: {
             contentBase: path.join(__dirname, "./dist")
         },
