@@ -27,5 +27,8 @@
     "webpack-dev-server": "^3.7.2"
   },
   "author": "Vitaly Brusentsev",
-  "license": "ISC"
+  "license": "ISC",
+  "optionalDependencies": {
+    "fsevents": "^2.3.2"
+  }
 }
